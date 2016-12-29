@@ -1,25 +1,31 @@
 import Gui
-from PIL import Image
+from PIL import Image, ImageTk
+import Tkinter as tk
 
 class ImageHandler(object):
 
     def __init__(self):
-        # self.gui = Gui.Gui()
         self.imagePath = ""
 
-    @staticmethod
-    def openImage():
-        """
-        self.setImagePath(Gui.Gui)
-        image = Image.open(self.getImagePath())
-        print(image)
-        print("Opened the image from path: " + self.imagePath)
-        """
-        print("Opened the image.")
+    def openImage(self, gui):
+        path = Gui.Gui.openFilePicker()
+        if path:
+            # setting image path
+            self.setImagePath(path)
 
-    @staticmethod
-    def saveImage():
-        print("Saved the image.")
+            # loading the image from specified path
+            image = Image.open(self.getImagePath())
+            imageTk = ImageTk.PhotoImage(image)
+            self.setImage(imageTk)
+            print "CON: **Got image**", image
+
+            # inserting image into GUI
+            Gui.Gui.insertOriginalImage(gui, imageTk)
+        else:
+            print "CON: **Canceled image loading**"
+
+    def saveImage(self):
+        print "CON: **Saved the image**"
 
     def getImage(self):
         return self.img
