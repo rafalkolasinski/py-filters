@@ -1,5 +1,6 @@
 import Tkinter as tk
 import ImageHandler as ih
+from Colours import Palette
 from tkFileDialog import askopenfilename
 from functools import partial
 
@@ -20,6 +21,7 @@ class Gui(object):
 
         self.menu = tk.Menu(self.frame)
         self.master.config(menu=self.menu)
+        self.master.title("py-filters")
 
         # File menu
         self.subMenu = tk.Menu(self.menu)
@@ -31,43 +33,46 @@ class Gui(object):
 
         # Edit menu
         self.editMenu = tk.Menu(self.menu)
-        self.menu.add_cascade(label="Edit", menu=self.editMenu)
-        self.editMenu.add_command(label="Apply filter")
 
         # Edit menu -> Filter menu
         # @TODO: list all of the filters and assign methods
-        # self.filterMenu = tk.Menu(self.editMenu)
-        # self.editMenu.add_cascade(self.filterMenu)
+        self.filterMenu = tk.Menu(self.editMenu)
+        self.filterMenu.add_command(label="Blur...")
+        self.filterMenu.add_command(label="Grayscale...")
 
+        # Attach filtermenu
+        self.editMenu.add_cascade(label="Apply filter", menu=self.filterMenu)
+
+        self.menu.add_cascade(label="Edit", menu=self.editMenu)
 
         # Toolbar
-        self.toolbar = tk.Frame(self.master, bg="gray")
+        self.toolbar = tk.Frame(self.frame, bg=Palette.GRAY)
 
         self.open = tk.Button(self.toolbar, text="Open image", command=partial(self.imgHandler.openImage, self))
         self.open.pack(side=tk.LEFT, padx=2, pady=2)
         self.save = tk.Button(self.toolbar, text="Save image", command=self.imgHandler.saveImage)
         self.save.pack(side=tk.LEFT, padx=2, pady=2)
 
-        self.toolbar.pack(side=tk.TOP, fill=tk.X)
+        self.toolbar.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
         # Images frame
         self.imgFrame = tk.Frame(self.master)
         self.imgFrame.pack()
 
         # Original image frame
-        self.original = tk.Frame(self.imgFrame, bd=10, bg="red")
+        self.original = tk.Frame(self.imgFrame)
         self.original.pack(side=tk.LEFT, padx=75)
         self.originalLabel = tk.Label(self.original, text="ORIGINAL IMAGE", anchor=tk.CENTER)
         self.originalLabel.pack(side=tk.TOP, fill=tk.BOTH)
-        self.originalImage = tk.Label(self.original, text="No image opened", anchor=tk.CENTER)
+        self.originalImage = tk.Label(self.original, text="No image opened", anchor=tk.CENTER, fg=Palette.GRAY)
         self.originalImage.pack(side=tk.BOTTOM)
 
         # Modified image frame
-        self.modified = tk.Frame(self.imgFrame, bd=10, bg="blue")
+        self.modified = tk.Frame(self.imgFrame)
         self.modified.pack(side=tk.LEFT, padx=75)
         self.modifiedLabel = tk.Label(self.modified, text="MODIFIED IMAGE", anchor=tk.CENTER)
         self.modifiedLabel.pack(side=tk.TOP, fill=tk.BOTH)
-        self.modifiedImage = tk.Label(self.modified, text="No image opened", anchor=tk.CENTER)
+        self.modifiedImage = tk.Label(self.modified, text="No image opened", anchor=tk.CENTER, fg=Palette.GRAY)
         self.modifiedImage.pack(side=tk.BOTTOM)
 
         # Status bar

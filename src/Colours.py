@@ -1,0 +1,6 @@
+class Palette:
+    PRIMARY = "#212121"
+    SECONDARY = "#EAEAEA"
+    GRAY = "#777777"
+    ACCENTPRIMARY = "#00C3A9"
+    ACCENTSECONDARY = "008798"
