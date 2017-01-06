@@ -1,6 +1,7 @@
 import Tkinter as tk
 import ImageHandler as ih
 from Colours import Palette
+from Filters import Filters
 from tkFileDialog import askopenfilename
 from functools import partial
 
@@ -11,6 +12,7 @@ class Gui(object):
         self.master = master
         self.imgHandler = ih.ImageHandler()
         self.tkinter = tk
+        self.filters = Filters()
 
         # Grid responsiveness config
         # tk.Grid.rowconfigure(self.master, 0, weight=1)
@@ -37,12 +39,13 @@ class Gui(object):
         # Edit menu -> Filter menu
         # @TODO: list all of the filters and assign methods
         self.filterMenu = tk.Menu(self.editMenu)
-        self.filterMenu.add_command(label="Blur...")
+        self.filterMenu.add_command(label="Blur...", command=partial(self.filters.blur, self.imgHandler, self))
         self.filterMenu.add_command(label="Grayscale...")
 
-        # Attach filtermenu
+        # Attach filtermenu to editmenu
         self.editMenu.add_cascade(label="Apply filter", menu=self.filterMenu)
 
+        # Attack editmenu to menu
         self.menu.add_cascade(label="Edit", menu=self.editMenu)
 
         # Toolbar
@@ -61,7 +64,7 @@ class Gui(object):
 
         # Original image frame
         self.original = tk.Frame(self.imgFrame)
-        self.original.pack(side=tk.LEFT, padx=75)
+        self.original.pack(side=tk.LEFT, padx=45)
         self.originalLabel = tk.Label(self.original, text="ORIGINAL IMAGE", anchor=tk.CENTER)
         self.originalLabel.pack(side=tk.TOP, fill=tk.BOTH)
         self.originalImage = tk.Label(self.original, text="No image opened", anchor=tk.CENTER, fg=Palette.GRAY)
@@ -69,7 +72,7 @@ class Gui(object):
 
         # Modified image frame
         self.modified = tk.Frame(self.imgFrame)
-        self.modified.pack(side=tk.LEFT, padx=75)
+        self.modified.pack(side=tk.LEFT, padx=45)
         self.modifiedLabel = tk.Label(self.modified, text="MODIFIED IMAGE", anchor=tk.CENTER)
         self.modifiedLabel.pack(side=tk.TOP, fill=tk.BOTH)
         self.modifiedImage = tk.Label(self.modified, text="No image opened", anchor=tk.CENTER, fg=Palette.GRAY)
@@ -100,3 +103,16 @@ class Gui(object):
             self.modifiedImage = tk.Label(self.modified, image=photo)
             self.modifiedImage.pack(side=tk.BOTTOM)
         print "CON: **Inserted image into GUI**"
+
+    @staticmethod
+    def insertModifiedImage(self, img):
+        self.photo = img # keeping image reference for safety reasons
+
+        if hasattr(self, 'modifiedImage'):
+            # clearing old modified image
+            # works only one-way for now - filters doesn't stack up
+            self.modifiedImage.destroy()
+
+            # inserting new modified image
+            self.modifiedImage = tk.Label(self.modified, image=self.photo)
+            self.modifiedImage.pack(side=tk.BOTTOM)
