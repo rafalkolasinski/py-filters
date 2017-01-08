@@ -41,7 +41,7 @@ class Filters(object):
         # change bias var to make image brighter/darker (default: 0.0)
         bias = 0.0
         image = imageHandlerRef.getRawImage()
-        originalPixels = list(np.array(image))
+        originalPixels = np.array(image)
         size = width, height = image.size
         result = np.copy(originalPixels)
         resultPixels = np.array(result)
@@ -54,8 +54,8 @@ class Filters(object):
 
                 for filterX in range(0, blurHeight):
                     for filterY in range(0, blurWidth):
-                        imageX = (x - blurWidth / 2 + filterX + width) % width
-                        imageY = (y - blurHeight / 2 + filterY + height) % height
+                        imageX = (x - blurHeight / 2 + filterX + height) % height
+                        imageY = (y - blurWidth / 2 + filterY + width) % width
 
                         red += originalPixels[imageX][imageY][0] * matrix[filterX, filterY]
                         green += originalPixels[imageX][imageY][1] * matrix[filterX, filterY]
