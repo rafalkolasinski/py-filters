@@ -9,7 +9,7 @@ class Filters(object):
         print "CON: **Filters init**"
 
     def blur(self, imageHandlerRef, guiRef):
-        # @TODO: drastically improve performance, implement threads, fix 1:1-only loop
+        # @TODO: drastically improve performance, implement threads
 
         # default values, controlled separately in future releases
         blurWidth = 7
@@ -40,15 +40,14 @@ class Filters(object):
         factor = 1.0 / 7
         # change bias var to make image brighter/darker (default: 0.0)
         bias = 0.0
-        pixels = imageHandlerRef.getRGBChannels()
         image = imageHandlerRef.getRawImage()
-        originalPixels = np.array(image)
+        originalPixels = list(np.array(image))
         size = width, height = image.size
         result = np.copy(originalPixels)
         resultPixels = np.array(result)
 
-        for x in range(width):
-            for y in range(height):
+        for x in range(height):
+            for y in range(width):
                 red = 0.0
                 green = 0.0
                 blue = 0.0
@@ -58,14 +57,13 @@ class Filters(object):
                         imageX = (x - blurWidth / 2 + filterX + width) % width
                         imageY = (y - blurHeight / 2 + filterY + height) % height
 
-                        red += originalPixels[imageX, imageY][0] * matrix[filterX, filterY]
-                        green += originalPixels[imageX, imageY][1] * matrix[filterX, filterY]
-                        blue += originalPixels[imageX, imageY][2] * matrix[filterX, filterY]
+                        red += originalPixels[imageX][imageY][0] * matrix[filterX, filterY]
+                        green += originalPixels[imageX][imageY][1] * matrix[filterX, filterY]
+                        blue += originalPixels[imageX][imageY][2] * matrix[filterX, filterY]
 
                 resultPixels[x, y][0] = min(max((factor * red + bias), 0), 255)
                 resultPixels[x, y][1] = min(max((factor * green + bias), 0), 255)
                 resultPixels[x, y][2] = min(max((factor * blue + bias), 0), 255)
-                print "CON: **@X[" + str(x) + "], @Y[" + str(y) + "], #RGB:" + str(resultPixels[x, y]) + "**"
 
         result = Image.fromarray(resultPixels)
         image2 = ImageTk.PhotoImage(result)
@@ -74,23 +72,21 @@ class Filters(object):
 
     def grayscale(self, imageHandlerRef, guiRef):
         factor = 1.0 # @TODO: add custom factor handler (gui slider)
-        pixels = imageHandlerRef.getRGBChannels()
+        originalPixels = imageHandlerRef.getPixels()
         image = imageHandlerRef.getRawImage()
-        originalPixels = np.array(image)
         size = width, height = image.size
-        result = list(originalPixels)
-        resultPixels = np.array(result)
+        resultPixels = np.copy(originalPixels)
 
-        for x in range(width):
-            for y in range(height):
+        for x in range(0, height):
+            for y in range(0, width):
                 avg = 0.0
 
                 for rgb in range(0, 3):
-                    avg += originalPixels[x, y, rgb]
+                    avg += originalPixels[x][y][rgb]
 
-                resultPixels[x, y, :3] = avg / 3 * factor
+                originalPixels[x][y][:3] = avg / 3 * factor
 
-        result = Image.fromarray(resultPixels)
-        resultTk = ImageTk.PhotoImage(result)
+        finalImage = Image.fromarray(originalPixels)
+        resultTk = ImageTk.PhotoImage(finalImage)
         Gui.Gui.insertModifiedImage(guiRef, resultTk)
         print "CON: **Finished applying grayscale**"

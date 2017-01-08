@@ -11,6 +11,7 @@ class ImageHandler(object):
         self.red = []
         self.green = []
         self.blue = []
+        self.pixels = []
 
     def openImage(self, guiRef):
         path = Gui.Gui.openFilePicker()
@@ -24,6 +25,7 @@ class ImageHandler(object):
 
             # setting the image RGB channels/pixel list
             pixels = np.array(image)
+            self.setPixels(pixels)
             self.setRGBChannels(pixels)
 
             # storing Tkinter version of image
@@ -71,3 +73,9 @@ class ImageHandler(object):
 
     def getRGBChannels(self):
         return np.array([self.red, self.green, self.blue])
+
+    def setPixels(self, pixels):
+        self.pixels = pixels
+
+    def getPixels(self):
+        return self.pixels
