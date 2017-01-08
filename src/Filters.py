@@ -90,3 +90,18 @@ class Filters(object):
         resultTk = ImageTk.PhotoImage(finalImage)
         Gui.Gui.insertModifiedImage(guiRef, resultTk)
         print "CON: **Finished applying grayscale**"
+
+    def invert(self, imageHandlerRef, guiRef):
+        originalPixels = imageHandlerRef.getPixels()
+        image = imageHandlerRef.getRawImage()
+        size = width, height = image.size
+
+        for x in range(0, height):
+            for y in range(0, width):
+                for rgb in range(0, 3):
+                    originalPixels[x][y][rgb] = abs(originalPixels[x][y][rgb] - 255)
+
+        finalImage = Image.fromarray(originalPixels)
+        resultTk = ImageTk.PhotoImage(finalImage)
+        Gui.Gui.insertModifiedImage(guiRef, resultTk)
+        print "CON: **Finished applying invert**"
