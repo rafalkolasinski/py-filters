@@ -11,6 +11,7 @@ class Filters(object):
     def blur(self, imageHandlerRef, guiRef):
         # @TODO: drastically improve performance, implement threads
 
+        Gui.Gui.setStatus(guiRef, "blur")
         # default values, controlled separately in future releases
         blurWidth = 7
         blurHeight = 7
@@ -61,16 +62,18 @@ class Filters(object):
                         green += originalPixels[imageX][imageY][1] * matrix[filterX, filterY]
                         blue += originalPixels[imageX][imageY][2] * matrix[filterX, filterY]
 
-                resultPixels[x, y][0] = min(max((factor * red + bias), 0), 255)
-                resultPixels[x, y][1] = min(max((factor * green + bias), 0), 255)
-                resultPixels[x, y][2] = min(max((factor * blue + bias), 0), 255)
+                resultPixels[x, y, 0] = min(max((factor * red + bias), 0), 255)
+                resultPixels[x, y, 1] = min(max((factor * green + bias), 0), 255)
+                resultPixels[x, y, 2] = min(max((factor * blue + bias), 0), 255)
 
         result = Image.fromarray(resultPixels)
         image2 = ImageTk.PhotoImage(result)
         Gui.Gui.insertModifiedImage(guiRef, image2)
+        Gui.Gui.setStatus(guiRef, None)
         print "CON: **Finished applying blur**"
 
     def grayscale(self, imageHandlerRef, guiRef):
+        Gui.Gui.setStatus(guiRef, "grayscale")
         factor = 1.0 # @TODO: add custom factor handler (gui slider)
         originalPixels = imageHandlerRef.getPixels()
         image = imageHandlerRef.getRawImage()
@@ -89,9 +92,11 @@ class Filters(object):
         finalImage = Image.fromarray(originalPixels)
         resultTk = ImageTk.PhotoImage(finalImage)
         Gui.Gui.insertModifiedImage(guiRef, resultTk)
+        Gui.Gui.setStatus(guiRef, None)
         print "CON: **Finished applying grayscale**"
 
     def invert(self, imageHandlerRef, guiRef):
+        Gui.Gui.setStatus(guiRef, "invert")
         originalPixels = imageHandlerRef.getPixels()
         image = imageHandlerRef.getRawImage()
         size = width, height = image.size
@@ -104,4 +109,5 @@ class Filters(object):
         finalImage = Image.fromarray(originalPixels)
         resultTk = ImageTk.PhotoImage(finalImage)
         Gui.Gui.insertModifiedImage(guiRef, resultTk)
+        Gui.Gui.setStatus(guiRef, None)
         print "CON: **Finished applying invert**"

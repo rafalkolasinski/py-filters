@@ -80,7 +80,9 @@ class Gui(object):
         self.modifiedImage.pack(side=tk.BOTTOM)
 
         # Status bar
-        self.status = tk.Label(self.master, text="Preparing to do stuff...", bd=1, relief=tk.SUNKEN, anchor=tk.W)
+        self.currentStatus = tk.StringVar()
+        self.currentStatus.set("Preparing to do stuff...")
+        self.status = tk.Label(self.master, textvariable=self.currentStatus, bd=1, relief=tk.SUNKEN, anchor=tk.W)
         self.status.pack(side=tk.BOTTOM, fill=tk.X)
 
     @staticmethod
@@ -117,3 +119,12 @@ class Gui(object):
             # inserting new modified image
             self.modifiedImage = tk.Label(self.modified, image=self.photo)
             self.modifiedImage.pack(side=tk.BOTTOM)
+
+    @staticmethod
+    def setStatus(self, filterName):
+        if filterName:
+            label = "Applying " + filterName + " filter..."
+        else:
+            label = "Preparing to do stuff..."
+        self.currentStatus.set(label)
+        self.status.update_idletasks()
