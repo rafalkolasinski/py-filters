@@ -71,3 +71,26 @@ class Filters(object):
         image2 = ImageTk.PhotoImage(result)
         Gui.Gui.insertModifiedImage(guiRef, image2)
         print "CON: **Finished applying blur**"
+
+    def grayscale(self, imageHandlerRef, guiRef):
+        factor = 1.0 # @TODO: add custom factor handler (gui slider)
+        pixels = imageHandlerRef.getRGBChannels()
+        image = imageHandlerRef.getRawImage()
+        originalPixels = np.array(image)
+        size = width, height = image.size
+        result = list(originalPixels)
+        resultPixels = np.array(result)
+
+        for x in range(width):
+            for y in range(height):
+                avg = 0.0
+
+                for rgb in range(0, 3):
+                    avg += originalPixels[x, y, rgb]
+
+                resultPixels[x, y, :3] = avg / 3 * factor
+
+        result = Image.fromarray(resultPixels)
+        resultTk = ImageTk.PhotoImage(result)
+        Gui.Gui.insertModifiedImage(guiRef, resultTk)
+        print "CON: **Finished applying grayscale**"

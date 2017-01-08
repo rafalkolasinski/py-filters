@@ -40,7 +40,7 @@ class Gui(object):
         # @TODO: list all of the filters and assign methods
         self.filterMenu = tk.Menu(self.editMenu)
         self.filterMenu.add_command(label="Blur...", command=partial(self.filters.blur, self.imgHandler, self))
-        self.filterMenu.add_command(label="Grayscale...")
+        self.filterMenu.add_command(label="Grayscale...", command=partial(self.filters.grayscale, self.imgHandler, self))
 
         # Attach filtermenu to editmenu
         self.editMenu.add_cascade(label="Apply filter", menu=self.filterMenu)
