@@ -29,7 +29,7 @@ class Gui(object):
         self.subMenu = tk.Menu(self.menu)
         self.menu.add_cascade(label="File", menu=self.subMenu)
         self.subMenu.add_command(label="Open image", command=partial(self.imgHandler.openImage, self))
-        self.subMenu.add_command(label="Save image", command=self.imgHandler.saveImage)
+        self.subMenu.add_command(label="Save image", command=self.imgHandler.saveImage, state=tk.DISABLED)
         self.subMenu.add_separator()
         self.subMenu.add_command(label="Exit", command=self.frame.quit)
 
@@ -46,15 +46,15 @@ class Gui(object):
         # Attach filtermenu to editmenu
         self.editMenu.add_cascade(label="Apply filter", menu=self.filterMenu)
 
-        # Attack editmenu to menu
-        self.menu.add_cascade(label="Edit", menu=self.editMenu)
+        # Attach editmenu to menu
+        self.menu.add_cascade(label="Edit", menu=self.editMenu, state=tk.DISABLED)
 
         # Toolbar
         self.toolbar = tk.Frame(self.frame, bg=Palette.GRAY)
 
         self.open = tk.Button(self.toolbar, text="Open image", command=partial(self.imgHandler.openImage, self))
         self.open.pack(side=tk.LEFT, padx=2, pady=2)
-        self.save = tk.Button(self.toolbar, text="Save image", command=self.imgHandler.saveImage)
+        self.save = tk.Button(self.toolbar, text="Save image", command=self.imgHandler.saveImage, state=tk.DISABLED)
         self.save.pack(side=tk.LEFT, padx=2, pady=2)
 
         self.toolbar.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
@@ -90,6 +90,13 @@ class Gui(object):
         filename = askopenfilename()
         if filename:
             return filename
+
+    @staticmethod
+    def enableImageMenus(self, isEnabled):
+        if isEnabled:
+            self.save.config(state="normal")
+            self.menu.entryconfig(2, state="normal")
+            self.subMenu.entryconfig(2, state="normal")
 
     @staticmethod
     def insertOriginalImage(self, img):

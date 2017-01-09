@@ -16,19 +16,13 @@ class ImageHandler(object):
     def openImage(self, guiRef):
         path = Gui.Gui.openFilePicker()
         if path:
-            # setting image path
+            guiRef.enableImageMenus(guiRef, True)
             self.setImagePath(path)
-
-            # loading the image from specified path -> storing PIL version of image
             image = Image.open(self.getImagePath())
             self.setRawImage(image)
-
-            # setting the image RGB channels/pixel list
             pixels = np.array(image)
             self.setPixels(pixels)
             self.setRGBChannels(pixels)
-
-            # storing Tkinter version of image
             imageTk = ImageTk.PhotoImage(image)
             self.setImageTk(imageTk)
 
